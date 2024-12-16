@@ -1,0 +1,115 @@
+12.15 1:51 PM
+Practical 3 
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+
+class publication {
+private:
+    string title;
+    float price;
+    string author;
+
+public:
+    void getData();
+    void Display();
+};
+
+void publication::getData() {
+    cout << "\nEnter title: ";
+    cin >> title;
+    cout << "Enter price: ";
+    cin >> price;
+    cout << "Enter author name: ";
+    cin >> author;
+}
+
+void publication::Display() {
+    cout << "\n--- Publication Details ---" << endl;
+    cout << "Title of Book: " << title << endl;
+    cout << "Price: ₹" << price << endl;
+    cout << "Author: " << author << endl;
+}
+
+class Book : public publication {
+private:
+    int pagecount;
+
+public:
+    void insert();
+    void display();
+};
+
+void Book::insert() {
+    getData();
+    cout << "Enter the total page numbers: ";
+    try {
+        cin >> pagecount;
+        if (pagecount == 0)
+            throw pagecount;
+    } catch (int) {
+        cout << "Pagecount can't be zero." << endl;
+    }
+}
+
+void Book::display() {
+    Display();
+    cout << "Total Page Count: " << pagecount << endl;
+}
+
+class Tape : public publication {
+private:
+    float minutes;
+
+public:
+    void Time();
+    void Show();
+};
+
+void Tape::Time() {
+    getData();
+    cout << "Enter the time of playing (in minutes): ";
+    cin >> minutes;
+}
+
+void Tape::Show() {
+    Display();
+    cout << "Playing Time: " << minutes << " minutes" << endl;
+}
+
+int main() {
+    Book b;
+    Tape t;
+    int ch;
+
+    do {
+        cout << "\n----- Main Menu -----" << endl;
+        cout << "1. Book" << endl;
+        cout << "2. CD" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> ch;
+
+        switch (ch) {
+        case 1:
+            cout << "\n--- Enter Book Details ---" << endl;
+            b.insert();
+            cout << "\n--- Displaying Book Details ---" << endl;
+            b.display();
+            break;
+
+        case 2:
+            cout << "\n--- Enter Tape Details ---" << endl;
+            t.Time();
+            cout << "\n--- Displaying Tape Details ---" << endl;
+            t.Show();
+            break;
+
+        case 3:
+            cout << "\nExiting the program. Thank you!" << endl;
+            exit(0);
+        }
+    } while (ch != 3);
+
+    return 0;
+}

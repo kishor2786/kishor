@@ -1,0 +1,67 @@
+12.15 2:08 PM
+Practical 4
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+class Student {
+public:
+    int a;             // Roll number
+    char ch[10];       // Name
+    char b[20];        // College name
+
+    void getdata() {
+        cout << "\nEnter the student's name: ";
+        cin >> ch;
+        cout << "Enter the roll number: ";
+        cin >> a;
+        cout << "Enter the college name: ";
+        cin >> b;
+    }
+
+    void display() {
+        cout << "\n--- Student Details ---";
+        cout << "\nName: " << ch;
+        cout << "\nRoll Number: " << a;
+        cout << "\nCollege Name: " << b << endl;
+    }
+};
+
+int main() {
+    Student s[5];
+    int i, n;
+    cout << "Enter the number of students: ";
+    cin >> n;
+
+    fstream f;
+
+    // Replace absolute path with relative path for better portability
+    f.open("demo.txt", ios::out);
+    if (!f) {
+        cerr << "Error opening file for writing!" << endl;
+        return 1;
+    }
+
+    for (i = 0; i < n; i++) {
+        cout << "\nEntering details for student " << (i + 1) << ":";
+        s[i].getdata();
+        f.write((char *)&s[i], sizeof(s[i]));
+    }
+    f.close();
+
+    f.open("demo.txt", ios::in);
+    if (!f) {
+        cerr << "Error opening file for reading!" << endl;
+        return 1;
+    }
+
+    cout << "\n--- Displaying Student Details from File ---" << endl;
+    for (i = 0; i < n; i++) {
+        f.read((char *)&s[i], sizeof(s[i]));
+        s[i].display();
+    }
+    f.close();
+
+    return 0;
+}
