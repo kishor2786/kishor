@@ -1,0 +1,133 @@
+12.16 1:21 PM
+Practical 4
+
+# Function for Linear Search
+def linear_search(arr, key):
+    for i in range(len(arr)):
+        if arr[i] == key:
+            return True  # Student found
+    return False  # Student not found
+
+# Function for Sentinel Search
+def sentinel_search(arr, key):
+    n = len(arr)
+    last = arr[-1]  # Store the last element
+    arr[-1] = key   # Set the sentinel
+    i = 0
+    
+    while arr[i] != key:
+        i += 1
+
+    # Restore the last element
+    arr[-1] = last
+    
+    # If the key is at the last position, we need to check explicitly
+    return i < n - 1 or arr[-1] == key
+
+# Main Program
+def main():
+    # Array of roll numbers
+    roll_numbers = [23, 45, 12, 67, 34, 89, 56]  # Random order
+    
+    print("Roll numbers of students who attended training:", roll_numbers)
+    
+    # Input roll number to search
+    roll_to_search = int(input("Enter roll number to search: "))
+    
+    # Linear Search
+    if linear_search(roll_numbers, roll_to_search):
+        print(f"Linear Search: Roll number {roll_to_search} attended the training.")
+    else:
+        print(f"Linear Search: Roll number {roll_to_search} did not attend the training.")
+    
+    # Sentinel Search
+    if sentinel_search(roll_numbers, roll_to_search):
+        print(f"Sentinel Search: Roll number {roll_to_search} attended the training.")
+    else:
+        print(f"Sentinel Search: Roll number {roll_to_search} did not attend the training.")
+
+# Run directly
+main()
+
+B)
+
+# Function for Binary Search
+def binary_search(arr, key):
+    low = 0
+    high = len(arr) - 1
+
+    while low <= high:
+        mid = (low + high) // 2
+        if arr[mid] == key:
+            return True  # Found
+        elif arr[mid] < key:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+    return False  # Not Found
+
+# Function for Fibonacci Search
+def fibonacci_search(arr, key):
+    n = len(arr)
+    fib2 = 0  # (m-2)'th Fibonacci number
+    fib1 = 1  # (m-1)'th Fibonacci number
+    fibM = fib2 + fib1  # m'th Fibonacci number
+
+    # Find the smallest Fibonacci number greater than or equal to n
+    while fibM < n:
+        fib2, fib1 = fib1, fibM
+        fibM = fib2 + fib1
+
+    offset = -1  # Marks eliminated range from front
+
+    # While there are elements to inspect
+    while fibM > 1:
+        # Check if fib2 is a valid index
+        i = min(offset + fib2, n - 1)
+
+        # If key is greater than the value at index fib2, cut the subarray from offset to i
+        if arr[i] < key:
+            fibM = fib1
+            fib1 = fib2
+            fib2 = fibM - fib1
+            offset = i
+        # If key is smaller, cut the subarray after i+1
+        elif arr[i] > key:
+            fibM = fib2
+            fib1 = fib1 - fib2
+            fib2 = fibM - fib1
+        else:
+            return True  # Found
+
+    # Compare the last element
+    if fib1 and arr[offset + 1] == key:
+        return True
+
+    return False  # Not Found
+
+# Main Program
+def main():
+    # Array of roll numbers in sorted order
+    roll_numbers = sorted([45, 12, 67, 34, 89, 23, 56])
+    print("Roll numbers of students who attended training (sorted):", roll_numbers)
+
+    # Input roll number to search
+    roll_to_search = int(input("Enter roll number to search: "))
+
+    # Binary Search
+    if binary_search(roll_numbers, roll_to_search):
+        print(f"Binary Search: Roll number {roll_to_search} attended the training.")
+    else:
+        print(f"Binary Search: Roll number {roll_to_search} did not attend the training.")
+
+    # Fibonacci Search
+    if fibonacci_search(roll_numbers, roll_to_search):
+        print(f"Fibonacci Search: Roll number {roll_to_search} attended the training.")
+    else:
+        print(f"Fibonacci Search: Roll number {roll_to_search} did not attend the training.")
+
+# Run the program
+if __name__ == "__main__":
+    main()
+

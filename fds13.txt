@@ -1,0 +1,108 @@
+12.14 11:16 AM
+Practical 13
+
+#include <iostream>
+using namespace std;
+
+class PizzaParlor {
+private:
+    int front, rear, size;
+    int *queue;
+
+public:
+    PizzaParlor(int maxSize) {
+        size = maxSize;
+        queue = new int[size];
+        front = -1;
+        rear = -1;
+    }
+
+    ~PizzaParlor() {
+        delete[] queue;
+    }
+
+    bool isFull() {
+        return (front == 0 && rear == size - 1) || (rear + 1 == front);
+    }
+
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    void placeOrder(int orderID) {
+        if (isFull()) {
+            cout << "Cannot accept more orders. The queue is full.\n";
+            return;
+        }
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            rear = (rear + 1) % size;
+        }
+        queue[rear] = orderID;
+        cout << "Order " << orderID << " placed successfully.\n";
+    }
+
+    void serveOrder() {
+        if (isEmpty()) {
+            cout << "No orders to serve.\n";
+            return;
+        }
+        cout << "Order " << queue[front] << " is being served.\n";
+        if (front == rear) {
+            front = rear = -1; // Reset queue if last order is served
+        } else {
+            front = (front + 1) % size;
+        }
+    }
+
+    void displayOrders() {
+        if (isEmpty()) {
+            cout << "No orders in the queue.\n";
+            return;
+        }
+        cout << "Current orders in queue: ";
+        int i = front;
+        while (true) {
+            cout << queue[i];
+            if (i == rear) break;
+            cout << ", ";
+            i = (i + 1) % size;
+        }
+        cout << "\n";
+    }
+};
+
+int main() {
+    int maxOrders;
+    cout << "Enter the maximum number of orders the parlor can handle: ";
+    cin >> maxOrders;
+
+    PizzaParlor parlor(maxOrders);
+
+    int choice, orderID;
+    while (true) {
+        cout << "\n1. Place Order\n2. Serve Order\n3. Display Orders\n4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter order ID: ";
+                cin >> orderID;
+                parlor.placeOrder(orderID);
+                break;
+            case 2:
+                parlor.serveOrder();
+                break;
+            case 3:
+                parlor.displayOrders();
+                break;
+            case 4:
+                cout << "Exiting the program.\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}

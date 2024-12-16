@@ -1,0 +1,119 @@
+12.14 1:45 PM
+Practical 11
+
+#include <iostream>
+using namespace std;
+
+class JobQueue {
+private:
+    int front, rear, size;
+    int *queue;
+
+public:
+    JobQueue(int maxSize) {
+        size = maxSize;
+        queue = new int[size];
+        front = -1;
+        rear = -1;
+    }
+
+    ~JobQueue() {
+        delete[] queue;
+    }
+
+    bool isFull() {
+        return (rear + 1) % size == front;
+    }
+
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    void addJob(int jobId) {
+        if (isFull()) {
+            cout << "Job queue is full. Cannot add more jobs.\n";
+            return;
+        }
+
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            rear = (rear + 1) % size;
+        }
+
+        queue[rear] = jobId;
+        cout << "Job " << jobId << " added to the queue.\n";
+    }
+
+    void deleteJob() {
+        if (isEmpty()) {
+            cout << "Job queue is empty. No jobs to delete.\n";
+            return;
+        }
+
+        cout << "Job " << queue[front] << " is being processed and removed from the queue.\n";
+
+        if (front == rear) {
+            front = rear = -1; // Reset queue if last job is removed
+        } else {
+            front = (front + 1) % size;
+        }
+    }
+
+    void displayJobs() {
+        if (isEmpty()) {
+            cout << "Job queue is empty.\n";
+            return;
+        }
+
+        cout << "Current jobs in the queue: ";
+        int i = front;
+        while (true) {
+            cout << queue[i];
+            if (i == rear) break;
+            cout << ", ";
+            i = (i + 1) % size;
+        }
+        cout << "\n";
+    }
+};
+
+int main() {
+    int maxJobs;
+    cout << "Enter the maximum number of jobs the queue can handle: ";
+    cin >> maxJobs;
+
+    JobQueue jobQueue(maxJobs);
+
+    int choice, jobId;
+
+    while (true) {
+        cout << "\n========== Job Queue Menu ==========\n";
+        cout << "1. Add Job\n";
+        cout << "2. Delete Job\n";
+        cout << "3. Display Jobs\n";
+        cout << "4. Exit\n";
+        cout << "====================================\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter job ID to add: ";
+                cin >> jobId;
+                jobQueue.addJob(jobId);
+                break;
+            case 2:
+                jobQueue.deleteJob();
+                break;
+            case 3:
+                jobQueue.displayJobs();
+                break;
+            case 4:
+                cout << "Exiting program. Goodbye!\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}

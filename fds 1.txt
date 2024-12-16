@@ -1,0 +1,76 @@
+12.16 4:24 PM
+Practical 1
+
+a = []  # Cricket
+b = []  # Badminton
+c = []  # Football
+
+# Input for Cricket
+an = int(input("Enter the total number of students who play CRICKET: "))
+for i in range(0, an):
+    print("Enter the name/roll number of student ", i + 1, end=" ")
+    x = input(": ")
+    a.append(x)
+
+# Input for Badminton
+bn = int(input("Enter the total number of students who play BADMINTON: "))
+for i in range(0, bn):
+    print("Enter the name/roll number of student ", i + 1, end=" ")
+    y = input(": ")
+    b.append(y)
+
+# Input for Football
+cn = int(input("Enter the total number of students who play FOOTBALL: "))
+for i in range(0, cn):
+    print("Enter the name/roll number of student ", i + 1, end=" ")
+    z = input(": ")
+    c.append(z)
+
+# Display Groups
+print("Group of Cricket ", a)
+print("Group of Badminton ", b)
+print("Group of Football ", c)
+
+# Intersection (Common Students)
+def intersection(list1, list2):
+    x = []
+    for i in list1:
+        for j in list2:
+            if i == j:
+                x.append(i)
+    print("List of students who play both Cricket and Badminton: ", x)
+
+# Symmetric Difference
+def different(l1, l2):
+    y = []
+    for i in l1:
+        if i not in l2:
+            y.append(i)
+    for k in l2:
+        if k not in l1:
+            y.append(k)
+    print("List of students who either play Cricket or Badminton but not both: ", y)
+
+# Students who play only Football
+def only(l1, l2, l3):
+    y = []
+    for i in l1:
+        if i not in l2:
+            if i not in l3:
+                y.append(i)
+    print("List of students who play only Football: ", y)
+
+# Students who play Cricket and Football but not Badminton
+def only2(l1, l2, l3):
+    y = []
+    for i in l1:
+        if i in l2:
+            if i not in l3:
+                y.append(i)
+    print("List of students who play Cricket and Football but not Badminton: ", y)
+
+# Function Calls
+intersection(a, b)
+different(a, b)
+only(c, a, b)
+only2(a, c, b)

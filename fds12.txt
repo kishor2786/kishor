@@ -1,0 +1,167 @@
+12.14 1:30 PM
+Practical 12
+
+#include <iostream>
+using namespace std;
+
+class Deque {
+private:
+    int front, rear, size;
+    int *dequeArray;
+
+public:
+    Deque(int maxSize) {
+        size = maxSize;
+        dequeArray = new int[size];
+        front = -1;
+        rear = -1;
+    }
+
+    ~Deque() {
+        delete[] dequeArray;
+    }
+
+    bool isFull() {
+        return (front == 0 && rear == size - 1) || (front == rear + 1);
+    }
+
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    void addFront(int value) {
+        if (isFull()) {
+            cout << "Deque is full. Cannot add at front.\n";
+            return;
+        }
+
+        if (isEmpty()) {
+            front = rear = 0; // First element
+        } else if (front == 0) {
+            front = size - 1; // Wrap around
+        } else {
+            front--;
+        }
+
+        dequeArray[front] = value;
+        cout << value << " added at the front.\n";
+    }
+
+    void addRear(int value) {
+        if (isFull()) {
+            cout << "Deque is full. Cannot add at rear.\n";
+            return;
+        }
+
+        if (isEmpty()) {
+            front = rear = 0; // First element
+        } else if (rear == size - 1) {
+            rear = 0; // Wrap around
+        } else {
+            rear++;
+        }
+
+        dequeArray[rear] = value;
+        cout << value << " added at the rear.\n";
+    }
+
+    void deleteFront() {
+        if (isEmpty()) {
+            cout << "Deque is empty. Cannot delete from front.\n";
+            return;
+        }
+
+        cout << dequeArray[front] << " removed from the front.\n";
+
+        if (front == rear) {
+            front = rear = -1; // Reset deque
+        } else if (front == size - 1) {
+            front = 0; // Wrap around
+        } else {
+            front++;
+        }
+    }
+
+    void deleteRear() {
+        if (isEmpty()) {
+            cout << "Deque is empty. Cannot delete from rear.\n";
+            return;
+        }
+
+        cout << dequeArray[rear] << " removed from the rear.\n";
+
+        if (front == rear) {
+            front = rear = -1; // Reset deque
+        } else if (rear == 0) {
+            rear = size - 1; // Wrap around
+        } else {
+            rear--;
+        }
+    }
+
+    void displayDeque() {
+        if (isEmpty()) {
+            cout << "Deque is empty.\n";
+            return;
+        }
+
+        cout << "Deque elements: ";
+        int i = front;
+        while (true) {
+            cout << dequeArray[i];
+            if (i == rear) break;
+            cout << " ";
+            i = (i + 1) % size;
+        }
+        cout << "\n";
+    }
+};
+
+int main() {
+    int maxSize;
+    cout << "Enter the maximum size of the deque: ";
+    cin >> maxSize;
+
+    Deque deque(maxSize);
+
+    int choice, value;
+    while (true) {
+        cout << "\n========== Deque Operations ==========\n";
+        cout << "1. Add to Front\n";
+        cout << "2. Add to Rear\n";
+        cout << "3. Delete from Front\n";
+        cout << "4. Delete from Rear\n";
+        cout << "5. Display Deque\n";
+        cout << "6. Exit\n";
+        cout << "======================================\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Enter value to add at front: ";
+                cin >> value;
+                deque.addFront(value);
+                break;
+            case 2:
+                cout << "Enter value to add at rear: ";
+                cin >> value;
+                deque.addRear(value);
+                break;
+            case 3:
+                deque.deleteFront();
+                break;
+            case 4:
+                deque.deleteRear();
+                break;
+            case 5:
+                deque.displayDeque();
+                break;
+            case 6:
+                cout << "Exiting program. Goodbye!\n";
+                return 0;
+            default:
+                cout << "Invalid choice. Please try again.\n";
+        }
+    }
+}

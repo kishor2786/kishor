@@ -1,0 +1,79 @@
+12.16 3:33 PM
+Practical 6
+
+# Simple function to find the top 5 scores
+def find_top_five(arr):
+    # Sort the array in descending order
+    arr.sort(reverse=True)
+    
+    # Return the top 5 scores
+    return arr[:5]
+
+# Quick Sort with partitioning using two pointers (i and j)
+def quick_sort(arr, low, high):
+    if low < high:
+        # Partition the array and get the pivot index
+        pivot = partition(arr, low, high)
+        
+        # Recursively sort the left and right subarrays
+        quick_sort(arr, low, pivot - 1)  # Left of pivot
+        quick_sort(arr, pivot + 1, high)  # Right of pivot
+
+# Partition function to rearrange the array around the pivot
+def partition(arr, low, high):
+    p = arr[low]  # Pivot element (first element in this case)
+    i = low + 1  # Pointer for the next element on the left side of the pivot
+    j = high     # Pointer for the next element on the right side of the pivot
+
+    while True:
+        # Move i rightward while elements are smaller than or equal to pivot
+        while i <= j and arr[i] <= p:
+            i += 1
+        # Move j leftward while elements are greater than or equal to pivot
+        while i <= j and arr[j] >= p:
+            j -= 1
+
+        # If i and j haven't crossed, swap elements
+        if i <= j:
+            arr[i], arr[j] = arr[j], arr[i]
+        else:
+            break
+
+    # Swap the pivot element with the element at index j
+    arr[low], arr[j] = arr[j], arr[low]
+    return j  # Return the pivot index
+
+# Function to display the sorted array in ascending order
+def display_sorted(arr):
+    quick_sort(arr, 0, len(arr) - 1)  # Call quick_sort to sort the array
+    print("Sorted percentages in ascending order:")
+    for score in arr:
+        print(score)
+
+# Function to display the top 5 scores using simple logic
+def display_top_five(arr):
+    top_five = find_top_five(arr)  # Find top 5 largest numbers
+    print("\nTop 5 scores (from highest to lowest):")
+    for score in top_five:
+        print(score)
+
+# Main program to input percentages
+def main():
+    # Input the number of students
+    percentages = []
+    n = int(input("Enter the number of students: "))
+    
+    # Input each student's percentage
+    for i in range(n):
+        percentage = float(input(f"Enter percentage for student {i + 1}: "))
+        percentages.append(percentage)
+
+    # First, display the sorted percentages in ascending order
+    display_sorted(percentages)
+
+    # Then, display the top 5 highest scores
+    display_top_five(percentages)
+
+# Run the program
+if __name__ == "__main__":
+    main()

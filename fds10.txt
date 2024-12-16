@@ -1,0 +1,106 @@
+12.14 2:32 PM
+Practical 10
+
+#include <stack>
+#include <iostream>
+
+using namespace std;
+
+// Function to define operator precedence
+int prec(char c) {
+    if (c == '^') {
+        return 3;
+    } else if (c == '*' || c == '/') {
+        return 2;
+    } else if (c == '+' || c == '-') {
+        return 1;
+    } else {
+        return -1;
+    }
+}
+
+// Function to convert infix to postfix
+string infixToPostfix(string s) {
+    stack<char> st;
+    string res;
+
+    for (int i = 0; i < s.length(); i++) {
+        // If the character is a digit, add it to the result
+        if (s[i] >= '0' && s[i] <= '9') {
+            res += s[i];
+        }
+        // If it's an opening parenthesis, push it to the stack
+        else if (s[i] == '(') {
+            st.push(s[i]);
+        }
+        // If it's a closing parenthesis, pop from stack until an opening parenthesis is found
+        else if (s[i] == ')') {
+            while (!st.empty() && st.top() != '(') {
+                res += st.top();
+                st.pop();
+            }
+            if (!st.empty()) {
+                st.pop(); // pop the opening parenthesis
+            }
+        }
+        // If it's an operator
+        else {
+            while (!st.empty() && prec(s[i]) <= prec(st.top())) {
+                res += st.top();
+                st.pop();
+            }
+            st.push(s[i]);
+        }
+    }
+
+    // Pop all remaining operators in the stack
+    while (!st.empty()) {
+        res += st.top();
+        st.pop();
+    }
+
+    return res;
+}
+
+// Function to evaluate postfix expression
+int evaluatePostfix(string s) {
+    stack<int> st;
+
+    for (int i = 0; i < s.length(); i++) {
+        if (s[i] >= '0' && s[i] <= '9') { // If it's a digit, push it to the stack
+            st.push(s[i] - '0'); // Convert char to integer
+        }
+        else { // If it's an operator, pop two operands and perform the operation
+            int b = st.top();
+            st.pop();
+            int a = st.top();
+            st.pop();
+
+            switch (s[i]) {
+                case '+': st.push(a + b); break;
+                case '-': st.push(a - b); break;
+                case '*': st.push(a * b); break;
+                case '/': st.push(a / b); break;
+                case '^': st.push(pow(a, b)); break; // For exponentiation
+            }
+        }
+    }
+
+    return st.top(); // Final result is the only value left in the stack
+}
+
+int main() {
+    string infix;
+    cout << "Enter an infix expression: ";
+    cin >> infix;
+
+    // Convert infix to postfix
+    string postfix = infixToPostfix(infix);
+    cout << "Postfix Expression: " << postfix << endl;
+
+    // Evaluate the postfix expression
+    int result = evaluatePostfix(postfix);
+    cout << "Evaluation Result: " << result << endl;
+
+    return 0;
+}

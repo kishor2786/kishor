@@ -1,0 +1,244 @@
+12.16 12:54 PM
+Practical 7
+
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+// Node structure
+struct Node {
+    int prn;           // PRN of the student
+    char name[50];     // Name of the student
+    Node* next;        // Pointer to the next node
+};
+
+// Pinnacle Club class
+class PinnacleClub {
+    Node* head = NULL;
+
+public:
+    Node* createNode();            // Create a new node
+    void insertPresident();        // Insert the President at the beginning
+    void insertSecretary();        // Insert the Secretary at the end
+    void insertMember();           // Insert a general member (between President and Secretary)
+    void deletePresident();        // Delete the President
+    void deleteSecretary();        // Delete the Secretary
+    void deleteMemberByPRN();      // Delete a general member by PRN
+    void displayMembers();         // Display all members
+    void countMembers();           // Count total members
+    void concatenate(PinnacleClub&); // Concatenate two club lists
+};
+
+// Function to create a new node
+Node* PinnacleClub::createNode() {
+    Node* newNode = new Node;
+    cout << "Enter PRN: ";
+    cin >> newNode->prn;
+    cout << "Enter Name: ";
+    cin.ignore();
+    cin.getline(newNode->name, 50);
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Insert President
+void PinnacleClub::insertPresident() {
+    Node* newNode = createNode();
+    newNode->next = head;
+    head = newNode;
+    cout << "President added successfully.\n";
+}
+
+// Insert Secretary
+void PinnacleClub::insertSecretary() {
+    Node* newNode = createNode();
+    if (head == NULL) {
+        head = newNode;  // If the list is empty, Secretary becomes the first member
+    } else {
+        Node* temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+    cout << "Secretary added successfully.\n";
+}
+
+// Insert General Member
+void PinnacleClub::insertMember() {
+    if (head == NULL || head->next == NULL) {
+        cout << "Cannot add members without President and Secretary.\n";
+        return;
+    }
+
+    Node* newNode = createNode();
+    Node* temp = head;
+
+    // Insert between President (head) and Secretary (last node)
+    while (temp->next != NULL && temp->next->next != NULL) {
+        temp = temp->next;
+    }
+    newNode->next = temp->next;
+    temp->next = newNode;
+    cout << "Member added successfully.\n";
+}
+
+// Delete President
+void PinnacleClub::deletePresident() {
+    if (head == NULL) {
+        cout << "List is empty. No President to delete.\n";
+        return;
+    }
+    Node* temp = head;
+    head = head->next;
+    delete temp;
+    cout << "President deleted successfully.\n";
+}
+
+// Delete Secretary
+void PinnacleClub::deleteSecretary() {
+    if (head == NULL) {
+        cout << "List is empty. No Secretary to delete.\n";
+        return;
+    }
+    if (head->next == NULL) {
+        delete head;
+        head = NULL;
+        cout << "Secretary deleted successfully.\n";
+        return;
+    }
+
+    Node* temp = head;
+    while (temp->next->next != NULL) {
+        temp = temp->next;
+    }
+    delete temp->next;
+    temp->next = NULL;
+    cout << "Secretary deleted successfully.\n";
+}
+
+// Delete Member by PRN
+void PinnacleClub::deleteMemberByPRN() {
+    if (head == NULL || head->next == NULL) {
+        cout << "No general members to delete.\n";
+        return;
+    }
+    int prn;
+    cout << "Enter PRN to delete: ";
+    cin >> prn;
+
+    Node* temp = head;
+    while (temp->next != NULL && temp->next->prn != prn) {
+        temp = temp->next;
+    }
+    if (temp->next != NULL) {
+        Node* toDelete = temp->next;
+        temp->next = temp->next->next;
+        delete toDelete;
+        cout << "Member with PRN " << prn << " deleted successfully.\n";
+    } else {
+        cout << "PRN not found.\n";
+    }
+}
+
+// Display Members
+void PinnacleClub::displayMembers() {
+    if (head == NULL) {
+        cout << "List is empty.\n";
+        return;
+    }
+    Node* temp = head;
+    cout << "PRN\tName\n";
+    while (temp != NULL) {
+        cout << temp->prn << "\t" << temp->name << "\n";
+        temp = temp->next;
+    }
+}
+
+// Count Members
+void PinnacleClub::countMembers() {
+    int count = 0;
+    Node* temp = head;
+    while (temp != NULL) {
+        count++;
+        temp = temp->next;
+    }
+    cout << "Total members: " << count << "\n";
+}
+
+// Concatenate Two Lists
+void PinnacleClub::concatenate(PinnacleClub& other) {
+    if (head == NULL) {
+        head = other.head;
+    } else {
+        Node* temp = head;
+        while (temp->next != NULL) {
+            temp = temp->next;
+        }
+        temp->next = other.head;
+    }
+    other.head = NULL;
+    cout << "Lists concatenated successfully.\n";
+}
+
+// Main Function
+int main() {
+    PinnacleClub club1, club2;
+    int choice;
+
+    do {
+        cout << "\n--- Pinnacle Club Menu ---\n";
+        cout << "1. Add President\n";
+        cout << "2. Add Secretary\n";
+        cout << "3. Add General Member\n";
+        cout << "4. Delete President\n";
+        cout << "5. Delete Secretary\n";
+        cout << "6. Delete Member by PRN\n";
+        cout << "7. Display Members\n";
+        cout << "8. Count Members\n";
+        cout << "9. Concatenate with Another Club\n";
+        cout << "10. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                club1.insertPresident();
+                break;
+            case 2:
+                club1.insertSecretary();
+                break;
+            case 3:
+                club1.insertMember();
+                break;
+            case 4:
+                club1.deletePresident();
+                break;
+            case 5:
+                club1.deleteSecretary();
+                break;
+            case 6:
+                club1.deleteMemberByPRN();
+                break;
+            case 7:
+                club1.displayMembers();
+                break;
+            case 8:
+                club1.countMembers();
+                break;
+            case 9:
+                cout << "Adding members to second club for concatenation.\n";
+                club2.insertPresident();
+                club2.insertSecretary();
+                club1.concatenate(club2);
+                break;
+            case 10:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice! Try again.\n";
+        }
+    } while (choice != 10);
+
+    return 0;
+}

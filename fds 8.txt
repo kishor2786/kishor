@@ -1,0 +1,197 @@
+12.16 4:12 PM
+Practical 8
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    string studentName;
+    Node* next;
+};
+
+// Function to insert a student into the linked list
+void insert(Node*& head, const string& studentName) {
+    Node* newNode = new Node;
+    newNode->studentName = studentName;
+    newNode->next = head;
+    head = newNode;
+}
+
+// Function to display the linked list
+void display(Node* head) {
+    if (head == nullptr) {
+        cout << "No students in the list." << endl;
+        return;
+    }
+    Node* temp = head;
+    while (temp != nullptr) {
+        cout << temp->studentName << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+}
+
+// Function to find intersection of two sets
+Node* intersection(Node* setA, Node* setB) {
+    Node* result = nullptr;
+    Node* tempA = setA;
+    while (tempA != nullptr) {
+        Node* tempB = setB;
+        while (tempB != nullptr) {
+            if (tempA->studentName == tempB->studentName) {
+                insert(result, tempA->studentName);
+            }
+            tempB = tempB->next;
+        }
+        tempA = tempA->next;
+    }
+    return result;
+}
+
+// Function to find union of two sets
+Node* unionSet(Node* setA, Node* setB) {
+    Node* result = setA;
+    Node* tempB = setB;
+    while (tempB != nullptr) {
+        bool exists = false;
+        Node* tempA = setA;
+        while (tempA != nullptr) {
+            if (tempA->studentName == tempB->studentName) {
+                exists = true;
+                break;
+            }
+            tempA = tempA->next;
+        }
+        if (!exists) {
+            insert(result, tempB->studentName);
+        }
+        tempB = tempB->next;
+    }
+    return result;
+}
+
+// Function to find difference (students who like only one type)
+Node* difference(Node* setA, Node* setB) {
+    Node* result = nullptr;
+    Node* tempA = setA;
+    while (tempA != nullptr) {
+        bool exists = false;
+        Node* tempB = setB;
+        while (tempB != nullptr) {
+            if (tempA->studentName == tempB->studentName) {
+                exists = true;
+                break;
+            }
+            tempB = tempB->next;
+        }
+        if (!exists) {
+            insert(result, tempA->studentName);
+        }
+        tempA = tempA->next;
+    }
+    return result;
+}
+
+// Function to find students who like neither vanilla nor butterscotch
+int neither(Node* allStudents, Node* setA, Node* setB) {
+    int count = 0;
+    Node* tempAll = allStudents;
+    while (tempAll != nullptr) {
+        bool found = false;
+        Node* tempA = setA;
+        Node* tempB = setB;
+        while (tempA != nullptr) {
+            if (tempAll->studentName == tempA->studentName) {
+                found = true;
+                break;
+            }
+            tempA = tempA->next;
+        }
+        while (tempB != nullptr) {
+            if (tempAll->studentName == tempB->studentName) {
+                found = true;
+                break;
+            }
+            tempB = tempB->next;
+        }
+        if (!found) {
+            count++;
+        }
+        tempAll = tempAll->next;
+    }
+    return count;
+}
+
+int main() {
+    Node* setA = nullptr; // Students who like vanilla
+    Node* setB = nullptr; // Students who like butterscotch
+    Node* allStudents = nullptr; // All students (to find those who like neither)
+
+    int nA, nB;
+    string studentName;
+
+    // Input: Number of students in set A (Vanilla) and set B (Butterscotch)
+    cout << "Enter number of students who like Vanilla Ice Cream: ";
+    cin >> nA;
+    cout << "Enter the names of students who like Vanilla Ice Cream:" << endl;
+    for (int i = 0; i < nA; i++) {
+        cin >> studentName;
+        insert(setA, studentName);
+        insert(allStudents, studentName);
+    }
+
+    cout << "Enter number of students who like Butterscotch Ice Cream: ";
+    cin >> nB;
+    cout << "Enter the names of students who like Butterscotch Ice Cream:" << endl;
+    for (int i = 0; i < nB; i++) {
+        cin >> studentName;
+        insert(setB, studentName);
+        insert(allStudents, studentName);
+    }
+
+    int choice;
+    do {
+        cout << "\nSelect an operation:" << endl;
+        cout << "1. Display students who like both vanilla and butterscotch" << endl;
+        cout << "2. Display students who like either vanilla or butterscotch but not both" << endl;
+        cout << "3. Display the number of students who like neither vanilla nor butterscotch" << endl;
+        cout << "4. Exit" << endl;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                {
+                    Node* both = intersection(setA, setB);
+                    cout << "Students who like both vanilla and butterscotch: ";
+                    display(both);
+                }
+                break;
+
+            case 2:
+                {
+                    Node* either = unionSet(setA, setB);
+                    Node* onlyEither = difference(either, intersection(setA, setB));
+                    cout << "Students who like either vanilla or butterscotch but not both: ";
+                    display(onlyEither);
+                }
+                break;
+
+            case 3:
+                {
+                    int neitherCount = neither(allStudents, setA, setB);
+                    cout << "Number of students who like neither vanilla nor butterscotch: " << neitherCount << endl;
+                }
+                break;
+
+            case 4:
+                cout << "Exiting program." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+        }
+    } while (choice != 4);
+
+    return 0;
+}

@@ -1,0 +1,136 @@
+12.16 12:54 PM
+Practical 3
+
+def main():
+    while True:
+        print("\nMatrix Operations Menu:")
+        print("1. Accept Matrices")
+        print("2. Display Matrices")
+        print("3. Add Matrices")
+        print("4. Subtract Matrices")
+        print("5. Multiply Matrices")
+        print("6. Transpose Matrices")
+        print("7. Exit")
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+            # Accept Matrix 1
+            row1 = int(input("Enter total number of rows for matrix 1: "))
+            col1 = int(input("Enter total number of columns for matrix 1: "))
+            m1 = []
+            print("Enter elements for the first matrix:")
+            res = accept(row1, col1, m1)
+
+            # Accept Matrix 2
+            row2 = int(input("Enter total number of rows for matrix 2: "))
+            col2 = int(input("Enter total number of columns for matrix 2: "))
+            m2 = []
+            print("Enter elements for the second matrix:")
+            res1 = accept(row2, col2, m2)
+
+        elif choice == 2:
+            # Display Matrices
+            print("Matrix 1:")
+            display(row1, col1, res)
+            print("Matrix 2:")
+            display(row2, col2, res1)
+
+        elif choice == 3:
+            # Add Matrices
+            add(row1, col1, res, row2, col2, res1)
+
+        elif choice == 4:
+            # Subtract Matrices
+            sub(row1, col1, res, row2, col2, res1)
+
+        elif choice == 5:
+            # Multiply Matrices
+            mul(row1, col1, res, row2, col2, res1)
+
+        elif choice == 6:
+            # Transpose Matrices
+            print("Transpose of Matrix 1:")
+            transpose(res)
+            print("Transpose of Matrix 2:")
+            transpose(res1)
+
+        elif choice == 7:
+            # Exit the program
+            print("Exiting the program.")
+            break
+
+        else:
+            print("Invalid choice. Please enter a valid option.")
+
+def accept(row, col, m):
+    """Accepts a matrix from the user."""
+    for i in range(row):
+        x = []
+        for j in range(col):
+            x.append(int(input(f"Enter element for row {i+1}, column {j+1}: ")))
+        m.append(x)
+    return m
+
+def display(row, col, res):
+    """Displays a matrix."""
+    for i in range(row):
+        for j in range(col):
+            print(res[i][j], end=" ")
+        print()
+
+def add(row1, col1, res, row2, col2, res1):
+    """Adds two matrices."""
+    if row1 == row2 and col1 == col2:
+        print("Addition of matrices:")
+        for i in range(row1):
+            for j in range(col1):
+                print(res[i][j] + res1[i][j], end=" ")
+            print()
+    else:
+        print("Addition is not possible due to differing dimensions.")
+
+def sub(row1, col1, res, row2, col2, res1):
+    """Subtracts two matrices."""
+    if row1 == row2 and col1 == col2:
+        print("Subtraction of matrices:")
+        for i in range(row1):
+            for j in range(col1):
+                print(res[i][j] - res1[i][j], end=" ")
+            print()
+    else:
+        print("Subtraction is not possible due to differing dimensions.")
+
+def mul(row1, col1, res, row2, col2, res1):
+    """Multiplies two matrices."""
+    if col1 == row2:
+        print("Multiplication of matrices:")
+        result = []
+        for i in range(row1):
+            row = []
+            for j in range(col2):
+                element = sum(res[i][k] * res1[k][j] for k in range(col1))
+                row.append(element)
+            result.append(row)
+        
+        # Display the result
+        for row in result:
+            for element in row:
+                print(element, end=" ")
+            print()
+    else:
+        print("Multiplication is not possible due to incompatible dimensions.")
+
+def transpose(matrix):
+    """Finds the transpose of a matrix."""
+    tran = []
+    for i in range(len(matrix[0])):
+        r = [matrix[j][i] for j in range(len(matrix))]
+        tran.append(r)
+
+    for row in tran:
+        for element in row:
+            print(element, end=" ")
+        print()
+
+# Run the main program
+main()
