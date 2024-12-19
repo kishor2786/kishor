@@ -1,0 +1,105 @@
+12.19 6:07 PM
+Clipping 1
+
+#include <iostream>
+using namespace std;
+
+// Define region codes
+const int INSIDE = 0; 
+const int LEFT = 1;   
+const int RIGHT = 2;  
+const int BOTTOM = 4; 
+const int TOP = 8;    
+
+// Define clipping window boundaries
+const int X_MIN = 10, Y_MIN = 10, X_MAX = 200, Y_MAX = 150;
+
+// Function to compute region code
+int computeCode(int x, int y) {
+    int code = INSIDE;
+
+    if (x < X_MIN)
+        code |= LEFT;
+    else if (x > X_MAX)
+        code |= RIGHT;
+
+    if (y < Y_MIN)
+        code |= BOTTOM;
+    else if (y > Y_MAX)
+        code |= TOP;
+
+    return code;
+}
+
+// Cohen-Sutherland Line Clipping Algorithm
+void cohenSutherlandClip(int x1, int y1, int x2, int y2) {
+    int code1 = computeCode(x1, y1);
+    int code2 = computeCode(x2, y2);
+    bool accept = false;
+
+    while (true) {
+        if ((code1 == 0) && (code2 == 0)) {
+            // Both endpoints are inside
+            accept = true;
+            break;
+        } else if (code1 & code2) {
+            // Both endpoints share an outside region
+            break;
+        } else {
+            // Line needs clipping
+            int codeOut;
+            int x, y;
+
+            // Choose one endpoint outside the clipping rectangle
+            if (code1 != 0)
+                codeOut = code1;
+            else
+                codeOut = code2;
+
+            // Find intersection point
+            if (codeOut & TOP) {
+                x = x1 + (x2 - x1) * (Y_MAX - y1) / (y2 - y1);
+                y = Y_MAX;
+            } else if (codeOut & BOTTOM) {
+                x = x1 + (x2 - x1) * (Y_MIN - y1) / (y2 - y1);
+                y = Y_MIN;
+            } else if (codeOut & RIGHT) {
+                y = y1 + (y2 - y1) * (X_MAX - x1) / (x2 - x1);
+                x = X_MAX;
+            } else if (codeOut & LEFT) {
+                y = y1 + (y2 - y1) * (X_MIN - x1) / (x2 - x1);
+                x = X_MIN;
+            }
+
+            // Replace outside point with intersection point
+            if (codeOut == code1) {
+                x1 = x;
+                y1 = y;
+                code1 = computeCode(x1, y1);
+            } else {
+                x2 = x;
+                y2 = y;
+                code2 = computeCode(x2, y2);
+            }
+        }
+    }
+
+    if (accept) {
+        cout << "Line accepted from (" << x1 << ", " << y1 << ") to ("
+             << x2 << ", " << y2 << ")\n";
+    } else {
+        cout << "Line rejected\n";
+    }
+}
+
+int main() {
+    // Example: line endpoints
+    int x1, y1, x2, y2;
+
+    cout << "Enter the endpoints of the line (x1, y1, x2, y2): ";
+    cin >> x1 >> y1 >> x2 >> y2;
+
+    cohenSutherlandClip(x1, y1, x2, y2);
+
+    return 0;
+}
